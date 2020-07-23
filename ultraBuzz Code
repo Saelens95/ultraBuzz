@@ -1,0 +1,79 @@
+//Ultra Sonic Sensor hooked up to a buzzer and multiple LEDs
+//Buzzer freq. increases as object detection approaches Ultra Sonic Sensor
+//Closer the object, the more LEDs that will light up
+
+
+
+#define trigPin D7
+#define echoPin D6
+#define LED D1
+#define LED2 D2
+#define LED3 D5
+#define buzz 3
+
+int sound = 250;
+
+
+void setup() {
+  Serial.begin (9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(LED, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(LED3, OUTPUT);
+  pinMode(buzz, OUTPUT);
+
+}
+
+void loop() {
+  long duration, distance;
+  digitalWrite(trigPin, LOW); 
+  delayMicroseconds(2);
+  
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  
+  digitalWrite(trigPin, LOW);
+  
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration/2) / 26.3;
+
+
+  if (distance <= 120) {
+    digitalWrite(LED3, HIGH);
+    delay(300);
+    sound = 200;
+}
+  else {
+    digitalWrite(LED3,LOW);
+  }
+  if (distance < 90) {
+      digitalWrite(LED2, HIGH);
+      delay(300);
+      sound = 260;
+}
+  else {
+      digitalWrite(LED2, LOW);
+  }
+  if (distance <60) {
+      digitalWrite(LED, HIGH);
+      delay(300);
+      sound = 290;
+} 
+  else {
+    digitalWrite(LED, LOW);
+  }
+  
+
+  if (distance > 90 || distance <= 0){
+    Serial.println("Out of Range. Get Closer!");
+    noTone(buzz);
+  }
+  else {
+    Serial.print(distance);
+    Serial.println(" cm");
+    tone(buzz, sound);
+
+  }
+  delay(100);
+}
